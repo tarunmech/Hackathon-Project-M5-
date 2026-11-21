@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1730">
+<title>SkillSync — Role Skill Match & Gap Analysis</title>
+<style>
+:root{color-scheme:light;--bg:#f4f7fb;--surface:#fff;--surface2:#f7f9fc;--surface3:#edf3fa;--bd:#dbe4ef;--tx:#14233b;--sub:#5d6b80;--muted:#718198;--pri:#2563eb;--pri2:#0ea5e9;--ok:#13834a;--okbg:#e9f8ef;--bad:#c2414b;--badbg:#fff0f1;--warn:#a86b13;--warnbg:#fff7e8;--shadow:0 14px 40px rgba(27,47,79,.08);--radius:18px}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#091322;--surface:#111f33;--surface2:#15263d;--surface3:#1b304d;--bd:#2a405d;--tx:#edf4ff;--sub:#a6b5c9;--muted:#8093ad;--pri:#70a5ff;--pri2:#48c4e8;--ok:#5cd18b;--okbg:#143a2c;--bad:#ff858d;--badbg:#43232d;--warn:#f0bd63;--warnbg:#40331d;--shadow:0 16px 44px rgba(0,0,0,.23)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:18px}body{margin:0;background:radial-gradient(ellipse at 10% -5%,rgba(37,99,235,.10),transparent 34%),radial-gradient(ellipse at 95% 0%,rgba(14,165,233,.07),transparent 25%),var(--bg);color:var(--tx);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid color-mix(in srgb,var(--pri) 35%,transparent);outline-offset:2px}
+.shell{width:min(1220px,100%);margin:auto;padding:22px 24px 56px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:4px 0 18px;border-bottom:1px solid var(--bd);margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px}.brand-logo{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:white;font-size:23px;font-weight:900;background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 8px 22px rgba(37,99,235,.25)}.brand h1{margin:0;font-size:1.35rem;letter-spacing:-.04em}.brand small{display:block;color:var(--sub);font-size:.78rem}.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.privacy-pill,.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:var(--surface);color:var(--sub);border-radius:999px;padding:6px 10px;font-size:.76rem;font-weight:700}.btn{border:1px solid var(--bd);background:var(--surface);color:var(--tx);border-radius:11px;padding:9px 13px;font-weight:700;font-size:.86rem;transition:transform .15s,border-color .15s,box-shadow .15s}.btn:hover{transform:translateY(-1px);border-color:var(--pri);box-shadow:0 7px 18px rgba(20,35,59,.08)}.btn.primary{background:linear-gradient(135deg,#2563eb,#087fc5);border:0;color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.2)}.btn.ghost{background:transparent}.btn.small{font-size:.78rem;padding:7px 10px}.hero{position:relative;overflow:hidden;border:1px solid var(--bd);border-radius:24px;padding:27px 29px;background:linear-gradient(112deg,rgba(37,99,235,.13),rgba(14,165,233,.07) 55%,rgba(16,185,129,.08)),var(--surface);box-shadow:var(--shadow);margin-bottom:18px}.hero:after{content:"";position:absolute;right:-60px;top:-120px;width:260px;height:260px;border:38px solid rgba(37,99,235,.07);border-radius:50%;pointer-events:none}.eyebrow{color:var(--pri);text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;font-weight:850}.hero h2{font-size:clamp(1.7rem,3.3vw,2.45rem);line-height:1.12;letter-spacing:-.045em;max-width:780px;margin:10px 0}.hero p{max-width:750px;color:var(--sub);margin:0 0 16px}.hero-tags{display:flex;flex-wrap:wrap;gap:8px}.hero-tags span{border:1px solid var(--bd);background:var(--surface);color:var(--sub);font-size:.76rem;font-weight:700;padding:6px 10px;border-radius:999px}.workflow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 20px}.workflow div{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--bd);background:var(--surface);border-radius:13px;color:var(--sub);font-size:.82rem}.workflow b{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;color:var(--pri);background:var(--surface3);font-size:.76rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}.card{border:1px solid var(--bd);background:var(--surface);border-radius:var(--radius);padding:18px;box-shadow:0 5px 18px rgba(20,35,59,.035);min-width:0}.card h3{margin:0;font-size:1rem;letter-spacing:-.015em}.card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.step{display:flex;align-items:center;gap:9px;font-weight:850}.step-no{display:grid;place-items:center;width:28px;height:28px;background:var(--surface3);color:var(--pri);border-radius:9px;font-size:.8rem}.sub{color:var(--sub)}.muted{color:var(--muted)}.hint{font-size:.8rem;color:var(--sub);margin:6px 0 11px}.drop-zone{border:1px dashed var(--bd);background:var(--surface2);border-radius:13px;padding:12px}.drop-zone input{width:100%;color:var(--sub);font-size:.84rem}textarea,select,input[type="search"],input[type="text"],input[type="url"]{width:100%;background:var(--surface2);color:var(--tx);border:1px solid var(--bd);border-radius:11px;padding:11px 12px}textarea{height:235px;resize:vertical;line-height:1.55;font-size:.87rem}select{min-height:42px}.msg{min-height:38px;margin:9px 0;padding:8px 10px;background:var(--surface2);border-radius:9px;color:var(--sub);font-size:.78rem} .role-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.job-search-box{border:1px solid var(--bd);background:var(--surface2);border-radius:14px;padding:13px;margin:12px 0}.job-search-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.search-help{font-size:.77rem;color:var(--sub);margin:8px 0 0}.search-status{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px dashed var(--bd);color:var(--sub);font-size:.78rem;overflow-wrap:anywhere}.search-status a{color:var(--pri);font-weight:800}.job-context{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.job-context .role-note{margin:3px 0}.job-context a{color:var(--pri);font-weight:750}.field-label{display:block;color:var(--sub);font-size:.74rem;font-weight:800;margin:10px 0 6px}.mini-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}.action-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:16px 0 18px}.action-row .primary{padding:12px 18px}.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 10px}.section-title h2{margin:0;font-size:1.15rem;letter-spacing:-.025em}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:12px 0}.stat{padding:15px;border:1px solid var(--bd);border-radius:15px;background:var(--surface);box-shadow:0 4px 14px rgba(20,35,59,.025)}.stat strong{display:block;font-size:1.85rem;letter-spacing:-.05em;line-height:1.1}.stat span{display:block;margin-top:7px;color:var(--sub);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:850}.stat.ok strong{color:var(--ok)}.stat.bad strong{color:var(--bad)}.stat.pri strong{color:var(--pri)}.progress-label{display:flex;justify-content:space-between;gap:8px;font-weight:750;font-size:.82rem}.progress{height:11px;border-radius:99px;background:var(--surface3);overflow:hidden;margin:9px 0 14px}.progress>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0ea5e9,#4f75ec);width:0;transition:width .3s}.callout{padding:12px 14px;border-radius:13px;background:var(--warnbg);border:1px solid color-mix(in srgb,var(--warn) 34%,var(--bd));font-size:.83rem;color:var(--tx);margin:12px 0}.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.skill-panel{padding:16px;border:1px solid var(--bd);border-radius:15px;background:var(--surface)}.skill-panel h3{font-size:.92rem;margin:0 0 9px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{display:inline-flex;align-items:center;border:1px solid var(--bd);border-radius:999px;padding:5px 9px;background:var(--surface2);font-size:.77rem;font-weight:750}.chip.ok{border-color:color-mix(in srgb,var(--ok) 38%,var(--bd));background:var(--okbg);color:var(--ok)}.chip.bad{border-color:color-mix(in srgb,var(--bad) 34%,var(--bd));background:var(--badbg);color:var(--bad)}.chip.warn{border-color:color-mix(in srgb,var(--warn) 34%,var(--bd));background:var(--warnbg);color:var(--warn)}.skill-card{border:1px solid var(--bd);background:var(--surface);border-radius:14px;padding:14px;margin:9px 0}.skill-card.missing{border-left:4px solid var(--bad)}.skill-card.matched{border-left:4px solid var(--ok)}.skill-card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.skill-card p{font-size:.83rem;color:var(--sub);margin:7px 0}.skill-card blockquote{background:var(--surface2);border-left:3px solid var(--pri2);border-radius:0 9px 9px 0;padding:9px 12px;margin:7px 0;font-size:.83rem}.priority{font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;font-weight:900;border-radius:999px;padding:4px 8px;background:var(--warnbg);color:var(--warn)}.priority.high{background:var(--badbg);color:var(--bad)}.priority.medium{background:var(--warnbg);color:var(--warn)}.priority.low{background:var(--surface3);color:var(--sub)}.category-bars{display:grid;gap:10px}.category-row{display:grid;grid-template-columns:minmax(120px,1fr) 2fr 42px;align-items:center;gap:10px;font-size:.8rem}.category-row .progress{margin:0;height:8px}.evidence-label{font-size:.71rem;font-weight:850;color:var(--sub);text-transform:uppercase;letter-spacing:.06em}.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.day{padding:13px;border:1px solid var(--bd);border-radius:13px;background:var(--surface)}.day.done{border-color:color-mix(in srgb,var(--ok) 40%,var(--bd));background:var(--okbg)}.day-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.day strong{font-size:.85rem}.day p{font-size:.8rem;color:var(--sub);margin:7px 0}.day label{display:flex;align-items:center;gap:7px;font-size:.76rem;font-weight:750;color:var(--sub);cursor:pointer}.day input{accent-color:var(--ok)}.checklist-box{display:flex;flex-wrap:wrap;gap:8px}.check-item{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--bd);padding:7px 10px;border-radius:10px;font-size:.8rem}.check-item input{accent-color:var(--pri)}.role-note,.footnote{font-size:.77rem;color:var(--sub)}.role-count{font-size:.74rem;color:var(--sub);font-weight:700}.role-profile-preview{margin:12px 0;padding:13px;border:1px solid var(--bd);border-radius:13px;background:var(--surface2)}.role-profile-preview>strong{display:block;margin-bottom:3px}.role-profile-preview .chips{margin-bottom:4px}.role-profile-preview .chip{font-size:.72rem}.empty{border:1px dashed var(--bd);padding:22px;text-align:center;border-radius:13px;color:var(--sub)}details.card{margin-top:16px}summary{cursor:pointer;font-weight:850}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:.8rem;min-width:630px}td,th{padding:9px;text-align:left;border-bottom:1px solid var(--bd);vertical-align:top}th{color:var(--sub);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}.badge-ok{color:var(--ok);font-weight:850}.badge-no{color:var(--bad);font-weight:850}.footer{margin-top:26px;border-top:1px solid var(--bd);padding-top:15px;font-size:.76rem;color:var(--sub)}.hidden{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:780px){.shell{padding:15px 13px 40px}.grid,.results-grid{grid-template-columns:1fr}.workflow{grid-template-columns:1fr}.hero{padding:21px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar{align-items:flex-start}.top-actions{justify-content:flex-end}.role-tools,.job-search-grid{grid-template-columns:1fr}.plan-grid{grid-template-columns:1fr}.category-row{grid-template-columns:115px 1fr 36px}}
+@media(max-width:440px){.topbar{flex-direction:column}.top-actions{justify-content:flex-start}.privacy-pill{display:none}.stats{gap:7px}.stat{padding:12px}.stat strong{font-size:1.6rem}.hero h2{font-size:1.7rem}.action-row>*{flex:1}.btn{white-space:normal}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+@media print{body{background:#fff;color:#111}.shell{width:100%;padding:0}.topbar,.hero,.workflow,.grid,.action-row,details.card,.footer{display:none!important}#out{display:block!important}.card,.skill-card,.day{box-shadow:none;break-inside:avoid;border-color:#bbb}.sub{color:#444}.progress{border:1px solid #bbb}}
+
+.missing-overview{border-color:color-mix(in srgb,var(--bad) 34%,var(--bd));background:linear-gradient(120deg,color-mix(in srgb,var(--badbg) 65%,var(--surface)),var(--surface))}.missing-overview-list{display:flex;flex-wrap:wrap;gap:9px}.missing-overview-item{display:inline-flex;flex-direction:column;gap:2px;min-width:145px;border:1px solid color-mix(in srgb,var(--bad) 35%,var(--bd));background:var(--badbg);color:var(--bad);border-radius:12px;padding:9px 12px}.missing-overview-item strong{font-size:.84rem}.missing-overview-item small{font-size:.68rem;font-weight:750;opacity:.9}
+
+.resume-overview{border:1px solid var(--bd);background:linear-gradient(120deg,color-mix(in srgb,var(--pri) 7%,var(--surface)),var(--surface));border-radius:16px;padding:16px;margin:12px 0 18px}
+.resume-overview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.resume-overview-head h3{margin:0;font-size:1rem}
+.resume-overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.resume-overview-block{min-width:0;border:1px solid var(--bd);background:var(--surface);border-radius:12px;padding:12px}
+.resume-overview-block h4{margin:0 0 7px;font-size:.78rem;color:var(--pri);text-transform:uppercase;letter-spacing:.06em}
+.resume-overview-block p{white-space:pre-wrap;margin:0;color:var(--tx);font-size:.82rem;overflow-wrap:anywhere}
+.resume-overview-block .chips{margin-top:6px}
+.resume-section-list{display:grid;gap:9px}
+.resume-section-item{border:1px solid var(--bd);background:var(--surface2);border-radius:11px;padding:10px 12px}
+.resume-section-item strong{display:block;font-size:.79rem;margin-bottom:4px}
+.resume-section-item p{white-space:pre-wrap;margin:0;color:var(--sub);font-size:.8rem;overflow-wrap:anywhere}
+.resume-editor{margin-top:12px;border:1px solid var(--bd);background:var(--surface2);border-radius:12px;padding:11px 13px}
+.resume-editor summary{font-size:.82rem;color:var(--sub)}
+.resume-editor[open] summary{color:var(--pri)}
+.resume-editor-inner{margin-top:10px}
+.resume-editor textarea{height:125px;max-height:170px;resize:vertical;font-size:.78rem;line-height:1.4}.resume-editor textarea.extracted-preview{background:var(--surface);white-space:pre-wrap}
+.resume-raw{margin-top:12px;border:1px solid var(--bd);background:var(--surface);border-radius:12px;padding:11px 13px}
+.resume-raw summary{font-size:.82rem}
+.resume-raw pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto;font: .78rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--sub);margin:10px 0 0}
+.gap-overview-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@media(max-width:780px){.resume-overview-grid{grid-template-columns:1fr}}
+
+.custom-eval-note{padding:11px 13px;border:1px solid var(--bd);background:var(--surface2);border-radius:12px;color:var(--sub);font-size:.79rem;margin:10px 0}
+.eval-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0}
+.eval-metric{padding:12px;border:1px solid var(--bd);border-radius:12px;background:var(--surface2)}
+.eval-metric strong{display:block;font-size:1.35rem;letter-spacing:-.03em}
+.eval-metric span{display:block;color:var(--sub);font-size:.67rem;text-transform:uppercase;letter-spacing:.06em;font-weight:850;margin-top:4px}
+.eval-target{padding:11px 13px;border-radius:12px;font-weight:800;font-size:.84rem;margin:10px 0}
+.eval-target.pass{background:var(--okbg);color:var(--ok);border:1px solid color-mix(in srgb,var(--ok) 35%,var(--bd))}
+.eval-target.fail{background:var(--warnbg);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--bd))}
+@media(max-width:650px){.eval-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.resume-overview-compact{padding:14px;margin:10px 0 16px}
+.resume-overview-compact .resume-overview-head{margin-bottom:9px}
+.resume-overview-compact .resume-overview-grid{gap:8px}
+.resume-overview-compact .resume-overview-block{padding:10px 11px}
+.resume-compact-list{margin:0;padding-left:18px;color:var(--tx);font-size:.8rem}
+.resume-compact-list li{margin:0 0 6px;line-height:1.45}
+.resume-compact-list li:last-child{margin-bottom:0}
+.resume-overview-compact .resume-overview-block p{font-size:.8rem;line-height:1.45}
+.resume-overview-compact .resume-raw pre{max-height:260px}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+ <div class="brand"><div class="brand-logo" aria-hidden="true">✦</div><div><h1>SkillSync</h1><small>Find the gaps. Build the skills. Get role-ready.</small></div></div>
+ <div class="top-actions"><span class="privacy-pill">🔒 Resume stays in this browser</span><button class="btn" id="theme" type="button">☾ Dark mode</button></div>
+</header>
+<section class="hero">
+ <div class="eyebrow">FROM RESUME TO ROLE-READY</div>
+ <h2>Know what the role needs. See where you stand. Close the gap.</h2>
+ <p>Upload your resume, choose the role you want, and SkillSync compares your demonstrated skills with a built-in role skills profile. See what already matches, what you may need to learn, and get a focused 14-day plan for your top three gaps. No web search is used.</p>
+ <div class="hero-tags"><span>Multi-layout PDF extraction + OCR fallback</span><span>Synonym-aware skill matching</span><span>Matched vs missing role skills</span><span>14-day plan for top 3 gaps</span><span>Private in-browser analysis</span></div>
+</section>
+<div class="workflow"><div><b>1</b><span><strong>Upload</strong> your actual resume PDF</span></div><div><b>2</b><span><strong>Choose</strong> the role you want</span></div><div><b>3</b><span><strong>Compare</strong> matched skills and skill gaps</span></div></div>
+<div class="grid">
+ <section class="card">
+  <div class="card-head"><div class="step"><span class="step-no">01</span><h3>Your resume</h3></div><span class="pill">PDF · up to 10 MB</span></div>
+  <p class="hint">Upload the candidate's actual resume PDF. SkillSync extracts text from that PDF and uses the extracted content for the overview and skill comparison. Demo resumes are not used.</p>
+  <div class="drop-zone"><input type="file" id="file" accept="application/pdf,.pdf" aria-label="Upload resume PDF"></div>
+  <div class="msg" id="msg" role="status" aria-live="polite">Ready. If the PDF appears to be scanned, SkillSync automatically attempts in-browser OCR when internet access is available.</div>
+  <details class="resume-editor" id="resumeEditor">
+   <summary>View concise extracted text (optional)</summary>
+   <div class="resume-editor-inner">
+    <label class="field-label" for="resume">Short preview from your uploaded PDF</label>
+    <textarea id="resume" class="extracted-preview" placeholder="Upload a resume PDF to see a short preview of its key information…" aria-label="Concise PDF text preview" readonly></textarea>
+    <div class="mini-row"><button class="btn small ghost" id="clearResume" type="button">Clear uploaded resume</button><span class="role-note">Only key lines are shown here. SkillSync keeps the full extracted PDF text privately in this browser tab for skill matching.</span></div>
+   </div>
+  </details>
+ </section>
+ <section class="card">
+  <div class="card-head"><div class="step"><span class="step-no">02</span><h3>Choose your target role</h3></div><span class="pill">No internet search required</span></div>
+  <p class="hint">Choose the role you want to apply for. SkillSync will compare the skills found in your resume with a built-in role profile. The profile is a practical baseline; individual employers may ask for different skills.</p>
+  <label class="field-label" for="rolePreset">Select a target role</label>
+  <select id="rolePreset">
+   <option value="">Choose a role profile…</option>
+   <optgroup label="Mechanical & Manufacturing">
+    <option value="graduate_mechanical_engineer">Graduate Mechanical Engineer</option>
+    <option value="mechanical_design_engineer">Mechanical Design Engineer</option>
+    <option value="manufacturing_engineer">Manufacturing / Production Engineer</option>
+    <option value="quality_engineer">Quality Engineer</option>
+    <option value="maintenance_engineer">Maintenance Engineer</option>
+    <option value="automotive_engineer">Automotive Engineer</option>
+   </optgroup>
+   <optgroup label="Software & IT">
+    <option value="software_developer">Software Developer</option>
+    <option value="frontend_developer">Frontend Developer</option>
+    <option value="backend_developer">Backend Developer</option>
+    <option value="full_stack_developer">Full-Stack Developer</option>
+    <option value="devops_engineer">DevOps Engineer</option>
+    <option value="cybersecurity_analyst">Cybersecurity Analyst</option>
+   </optgroup>
+   <optgroup label="Data & AI">
+    <option value="data_analyst">Data Analyst</option>
+    <option value="data_scientist">Data Scientist</option>
+    <option value="ai_ml_engineer">AI / Machine Learning Engineer</option>
+   </optgroup>
+   <optgroup label="Core Engineering">
+    <option value="electrical_engineer">Electrical Engineer</option>
+    <option value="electronics_engineer">Electronics Engineer</option>
+    <option value="civil_engineer">Civil Engineer</option>
+    <option value="robotics_engineer">Robotics / Embedded Systems Engineer</option>
+   </optgroup>
+   <optgroup label="Business & Design">
+    <option value="ui_ux_designer">UI / UX Designer</option>
+    <option value="business_analyst">Business Analyst</option>
+    <option value="digital_marketing">Digital Marketing Executive</option>
+    <option value="financial_analyst">Financial Analyst</option>
+    <option value="hr_coordinator">HR Coordinator</option>
+    <option value="supply_chain_analyst">Supply Chain / Operations Analyst</option>
+   </optgroup>
+   <option value="custom">Other role — define the required skills</option>
+  </select>
+  <label class="field-label" for="jobTitle">Your target job title</label>
+  <input type="text" id="jobTitle" placeholder="e.g. Graduate Mechanical Engineer" autocomplete="off">
+  <div id="roleProfilePreview" class="role-profile-preview" aria-live="polite"><strong>Choose a role to see its skill requirements.</strong><p class="role-note">You can also select “Other role” and enter the required skills yourself.</p></div>
+  <div id="customRoleSkillsWrap" class="hidden">
+   <label class="field-label" for="customRoleSkills">Skills required for this custom role</label>
+   <textarea id="customRoleSkills" style="height:105px" placeholder="Enter skill names separated by commas or new lines. Example: SolidWorks, GD&T, Technical Drawings, ANSYS" aria-label="Required skills for custom role"></textarea>
+   <p class="search-help">Enter the skills you want SkillSync to check. Known synonyms are normalised automatically.</p>
+  </div>
+  <div class="mini-row"><button class="btn small ghost" id="clearRole" type="button">Clear role selection</button></div>
+ </section>
+</div>
+<div class="action-row"><button class="btn primary" id="go" type="button">✦ Analyse skill gaps</button><button class="btn" id="copy" type="button" hidden>Copy report</button><button class="btn" id="download" type="button" hidden>Download report</button><button class="btn" id="print" type="button" hidden>Print / Save PDF</button><button class="btn ghost" id="reset" type="button">Reset workspace</button></div>
+<div id="out" aria-live="polite"></div>
+<footer class="footer"><strong>SkillSync · Role-profile comparison:</strong> This browser-based tool compares skills extracted from the uploaded resume PDF with a reference profile for the selected career role. Role profiles represent typical baseline skills, not live or universal employer requirements. A “missing” skill means it was not detected in the PDF; it does not prove the candidate lacks that skill. Review extraction and alternate wording before drawing conclusions. PDF text and OCR processing run in this browser tab; the PDF/OCR libraries are downloaded from public CDNs, but resume text is not sent to those library providers. OCR can read printed labels near graphic icons, but cannot reliably identify a logo-only icon with no readable label. The current role-profile workflow does not display exact lines from a specific job description.</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const safeStore={get(key){try{return localStorage.getItem(key)}catch{return null}},set(key,value){try{localStorage.setItem(key,value);return true}catch{return false}},remove(key){try{localStorage.removeItem(key)}catch{}}};
+const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clean=t=>String(t||'').replace(/[\uE000-\uF8FF\uFFFD\u200B\u00AD]/g,' ').replace(/[ \t]+/g,' ').replace(/\r/g,'');
+// Build a compact, readable preview for the optional editor. The full PDF text is
+// retained separately and is always used by the matching engine.
+function compactPdfPreview(text){
+ const raw=clean(text).split(/\n+/).map(v=>v.replace(/^\s*(?:[•●▪◦*-]|\d+[.)])\s*/,'').trim()).filter(Boolean);
+ const contact=/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b|https?:\/\/|www\./i;
+ const isPhoneLine=x=>(x.match(/\+?\d[\d\s().-]*\d/g)||[]).some(v=>(v.match(/\d/g)||[]).length>=10);
+ const noise=/^(page\s+\d+|curriculum vitae|resume|references available on request|references|declaration|personal details|skillsync test document.*|fictional sample.*|sample candidate profile.*|this fictional resume is designed to.*|sample academic record)$/i;
+ const sectionRules=[
+  {name:'SUMMARY',re:/^(professional\s+)?(summary|profile|profile summary|career summary|objective|about me)\s*:?$/i,max:1},
+  {name:'SKILLS',re:/^(technical\s+)?(skills|core competencies|competencies|key skills|technical expertise|areas of expertise)\s*:?$/i,max:2},
+  {name:'EXPERIENCE',re:/^(professional\s+)?(experience|work experience|employment history|work history|internships?|internship experience|internship\s*\/\s*practical exposure|practical exposure|industrial training)\s*:?$/i,max:1},
+  {name:'PROJECTS',re:/^(academic\s+)?(projects|key projects|personal projects|academic projects|project experience|project work)\s*:?$/i,max:1},
+  {name:'EDUCATION',re:/^(education|academic background|qualifications|educational qualifications)\s*:?$/i,max:1},
+  {name:'CERTIFICATIONS',re:/^(certifications?|licenses?|courses|training|certificates)\s*:?$/i,max:1}
+ ];
+ const lines=raw.filter(x=>!contact.test(x)&&!isPhoneLine(x)&&!noise.test(x)&&x.length<=300);
+ const sections=[];let active=null;const header=[];
+ for(const line of lines){
+  const match=sectionRules.find(x=>x.re.test(line));
+  if(match){active={name:match.name,max:match.max,lines:[]};sections.push(active);continue;}
+  if(active)active.lines.push(line);else if(header.length<4)header.push(line);
+ }
+ const selected=[];
+ const add=(tag,line,max=170)=>{if(!line)return;let t=line.replace(/\s+/g,' ').trim();if(t.length>max)t=t.slice(0,max-1).replace(/\s+\S*$/,'')+'…';if(t&&!selected.includes(`${tag}: ${t}`))selected.push(`${tag}: ${t}`)};
+ const candidate=header.find(x=>x.length<=70&&!/\b(skillsync|resume|curriculum vitae|sample|fictional)\b/i.test(x));
+ if(candidate)add('CANDIDATE',candidate,65);
+ const order=['SUMMARY','SKILLS','EXPERIENCE','PROJECTS','EDUCATION','CERTIFICATIONS'];
+ for(const name of order){
+  const sec=sections.find(x=>x.name===name);if(!sec)continue;
+  let relevant=sec.lines.filter(x=>x.length>4&&!noise.test(x));
+  if(name==='SKILLS'&&typeof findSkills==='function'){
+   const withSkills=relevant.filter(x=>findSkills(x).length);
+   if(withSkills.length)relevant=withSkills;
+  }
+  if(name==='EXPERIENCE'||name==='PROJECTS'){
+   const action=/\b(built|developed|designed|implemented|created|analysed|analyzed|managed|tested|led|improved|maintained|used|worked|deployed|modelled|modeled|fabricated|programmed|simulated|operated)\b/i;
+   relevant=[...relevant.filter(x=>action.test(x)),...relevant.filter(x=>!action.test(x))];
+  }
+  relevant.slice(0,sec.max).forEach(x=>add(name,x,name==='SKILLS'?220:170));
+ }
+ if(selected.length<=1){
+  const skillLines=lines.filter(x=>typeof findSkills==='function'&&findSkills(x).length);
+  const actionLines=lines.filter(x=>/\b(built|developed|designed|implemented|created|tested|managed|intern|project|experience)\b/i.test(x));
+  [...skillLines,...actionLines].filter((x,i,a)=>a.indexOf(x)===i).slice(0,6).forEach(x=>add('DETAIL',x,170));
+ }
+ if(!selected.length)lines.slice(0,4).forEach(x=>add('EXTRACT',x,140));
+ let result=selected.slice(0,8).join('\n');
+ if(result.length>950)result=result.slice(0,949).replace(/\s+\S*$/,'')+'…';
+ return result;
+}
+const OPTIONAL_HEADING=/^\W*(preferred(?: qualifications| skills)?|nice[ -]to[ -]have|good[ -]to[ -]have|bonus|optional|desirable|plus points?|added advantage|additional qualifications?)(?:\s*\([^)]*\))?\s*:?\s*(.*)$/i;
+const REQUIRED_HEADING=/^\W*(required(?: qualifications| skills)?|requirements?|mandatory|must[ -]have|minimum qualifications?|basic qualifications?|qualifications|core skills|key skills|technical skills|responsibilities|what you(?:'|’)ll bring)\s*:?\s*(.*)$/i;
+const OPTIONAL_INLINE=/\b(preferred|nice[ -]to[ -]have|good to have|is a plus|are a plus|a plus|bonus|optional|advantageous|desirable|added advantage)\b/i;
+const STRONG=/\b(must|required|mandatory|essential|minimum|strong|proficien\w*|expert\w*|hands-on|advanced|at least|demonstrated experience|proven experience)\b/i;
+const CONTEXT_HEADING=/^\W*(about us|about the company|company overview|company profile|who we are|what we do|our story|role overview|job overview|about the role|about this role|the team|our team|why join us)\s*:?\s*$/i;
+const CONTEXT_EXPLICIT_REQUIREMENT=/\b(must|required|mandatory|essential|proficien\w*|hands-on|experience with|experience in|knowledge of|ability to|proven experience)\b/i;
+
+// Canonical skill names and aliases. Matching is literal and boundary-aware unless an alias starts with re:.
+const TAX={
+"Programming Languages":[
+"Python|python3;python 3","Java|java se;java ee","C|re:\\bc\\s*(?:programming|language)\\b;re:\\bc\\s*\\/\\s*c\\+\\+;re:\\bc\\s+(?:and|or)\\s+c\\+\\+","C++|cpp","C#|c sharp;csharp","JavaScript|js;ecmascript;es6","TypeScript|ts","Go|golang;re:\\bgo\\s+(?:programming|language)\\b","Rust|","Kotlin|","Swift|","PHP|","Ruby|","MATLAB|mat lab","R|re:\\br programming\\b;re:\\br language\\b","Dart|","Scala|","Bash|shell scripting;bash scripting;shell script"] ,
+"Web & App Development":[
+"HTML|html5","CSS|css3","React.js|reactjs;react js;re:\\breact(?!\\s*native)\\b","React Native|react-native","Angular|angularjs;angular.js","Vue.js|vuejs;vue js","Next.js|nextjs","Node.js|nodejs;node js;node","Express.js|expressjs;express js","Django|","Flask|","FastAPI|fast api","Spring Boot|springboot",".NET|dotnet;asp.net","Tailwind CSS|tailwind","Bootstrap|","REST APIs|rest api;restful;restful apis","GraphQL|","UI/UX|ux design;ui design","Flutter|","Android Development|android sdk;android studio","iOS Development|ios app development","Laravel|","Svelte|","Responsive Design|mobile responsive;responsive web design","Accessibility|web accessibility;wcag"] ,
+"Databases & Data Platforms":[
+"SQL|","MySQL|my sql","PostgreSQL|postgres;postgre sql","MongoDB|mongo db;mongo","SQLite|","Redis|","Oracle DB|oracle sql;pl/sql","NoSQL|no sql","Firebase|","Apache Spark|spark sql","Hadoop|","ETL|extract transform load","Data Warehousing|data warehouse","Snowflake|","BigQuery|google bigquery"] ,
+"DevOps & Cloud":[
+"Git|","GitHub|git hub","GitLab|git lab","Docker|","Kubernetes|k8s","AWS|amazon web services","Azure|microsoft azure","GCP|google cloud platform","Linux|unix","CI/CD|cicd;github actions;jenkins","Terraform|","Postman|","Ansible|","Grafana|","Prometheus|","Azure DevOps|","Amazon S3|s3;amazon s3","Serverless|serverless computing"] ,
+"Data & Artificial Intelligence":[
+"Machine Learning|re:\\bml\\b","Artificial Intelligence|re:\\bai\\b;generative ai","Deep Learning|","NLP|natural language processing","Data Analysis|data analytics","Data Visualization|data visualisation","Pandas|","NumPy|numpy","scikit-learn|sklearn;scikit learn","TensorFlow|","PyTorch|","Power BI|powerbi","Tableau|","Microsoft Excel|ms excel;advanced excel;re:\\bexcel\\s+(?:formulas?|pivot|spreadsheets?|macros?|vlookup)\\b","Statistics|statistical analysis","Data Structures & Algorithms|dsa;data structures;algorithms","OOP|object oriented programming;object-oriented;oops","Jupyter Notebook|jupyter","A/B Testing|ab testing;split testing","LLM|large language model;large language models","Prompt Engineering|","Computer Vision|","MLOps|machine learning operations","Feature Engineering|","Data Cleaning|data preprocessing"] ,
+"Mechanical & Manufacturing":[
+"SolidWorks|solid works","AutoCAD|auto cad","CATIA|","Fusion 360|fusion360","Creo|pro/e;ptc creo","ANSYS|","FEA|finite element analysis;finite element","CFD|computational fluid dynamics","GD&T|gdt;geometric dimensioning and tolerancing","Thermodynamics|","Fluid Mechanics|","Heat Transfer|","3D Printing|additive manufacturing","CNC|cnc machining","Six Sigma|lean six sigma","Lean Manufacturing|","Simulink|","Arduino|","Embedded Systems|","PLC|programmable logic controller;programmable logic controllers","Robotics|","Manufacturing Processes|","Preventive Maintenance|","Root Cause Analysis|rca","Kaizen|","Assembly Line|production line","Technical Drawings|engineering drawings"] ,
+"Electrical, Electronics & Civil": [
+"Circuit Analysis|circuit design;electrical circuits","Power Systems|power system analysis","Electrical Machines|electric machines","Power Electronics|","Control Systems|","PCB Design|printed circuit board design;pcb layout","Microcontrollers|microcontroller","IoT|internet of things","VHDL|","Verilog|","ETAP|","Revit|","BIM|building information modelling;building information modeling","STAAD.Pro|staad pro","ETABS|","Quantity Surveying|","Surveying|land surveying","Structural Analysis|","Geotechnical Engineering|","Estimation & Costing|cost estimation;quantity takeoff"] ,
+"Quality, Testing & Security":[
+"Testing|unit testing;integration testing;software testing","Selenium|","Cypress|","Playwright|","Pytest|","JUnit|","Jest|","Quality Assurance|qa testing;quality control","Cybersecurity|cyber security;information security","Penetration Testing|pen testing","OWASP|","SIEM|security information and event management","Wireshark|","Burp Suite|","Vulnerability Assessment|vulnerability scanning","Network Security|","Manual Testing|","Automation Testing|test automation","ISO 9001|","SPC|statistical process control"] ,
+"Business, Marketing & Design":[
+"Business Analysis|business analyst skills","Requirements Gathering|","Process Mapping|","BPMN|","Jira|","Project Management|","Microsoft PowerPoint|ms powerpoint;powerpoint","Google Analytics|ga4;google analytics 4","SEO|search engine optimization;search engine optimisation","SEM|search engine marketing","Google Ads|google adwords","Meta Ads|facebook ads;instagram ads","Content Marketing|","Social Media Marketing|","Email Marketing|","CRM|customer relationship management","Salesforce|","HubSpot|","Market Research|","Canva|","Adobe Photoshop|photoshop","Adobe Illustrator|illustrator","Wireframing|","Prototyping|","User Research|","Usability Testing|","Figma|","Brand Management|"] ,
+"Finance, HR & Operations":[
+"Financial Analysis|","Financial Modelling|financial modeling","Accounting|","Bookkeeping|","Tally|tally erp","GST|goods and services tax","Budgeting|","Forecasting|","Auditing|","Excel Reporting|","Recruitment|talent acquisition","HR Operations|human resources operations","Human Resource Management|hrm","Payroll|","Employee Relations|","Training & Development|learning and development","Supply Chain Management|supply chain","Inventory Management|","Procurement|","Vendor Management|","Logistics|","Operations Management|","Demand Planning|","Lean Operations|","Stakeholder Management|"] ,
+"Professional & Collaboration Skills":[
+"Agile|scrum","Communication|communication skills","Problem Solving|problem-solving","Teamwork|team work;collaboration","Leadership|","Critical Thinking|","Adaptability|","Attention to Detail|","Documentation|technical documentation;documentation skills","Time Management|","Presentation Skills|","Customer Service|client service","Negotiation|","Analytical Thinking|","Written Communication|","Verbal Communication|"]
+};
+const RES={
+"Programming Languages":"Work through the official language tutorial, then complete a small role-related coding exercise.","Web & App Development":"Follow the official getting-started guide, then build and deploy a small interface or app.","Databases & Data Platforms":"Practise queries or data modelling on a sample dataset and explain your design decisions.","DevOps & Cloud":"Use official documentation and safe local labs; document a repeatable setup or deployment.","Data & Artificial Intelligence":"Use a public dataset or small notebook; compare a baseline with a simple improved approach.","Mechanical & Manufacturing":"Follow the software or standards tutorial; model, inspect or analyse a real component or process.","Electrical, Electronics & Civil":"Build a small simulation, drawing or documented calculation appropriate to the skill.","Quality, Testing & Security":"Practise in a local demo environment; create a test checklist and record reproducible findings.","Business, Marketing & Design":"Create a small case study, analysis, campaign plan or prototype and record the decisions.","Finance, HR & Operations":"Use a small synthetic dataset or case study; produce a documented report or workflow.","Professional & Collaboration Skills":"Apply the skill in a team assignment and collect specific evidence of your contribution."
+};
+// Local role profiles. These are baseline skill sets, not live vacancy data.
+// Users may add extra skills or define a fully custom role without internet search.
+const ROLE_PROFILES={
+ graduate_mechanical_engineer:{title:'Graduate Mechanical Engineer',required:['Thermodynamics','Fluid Mechanics','Heat Transfer','Manufacturing Processes','Technical Drawings','SolidWorks','AutoCAD','Problem Solving','Communication'],preferred:['ANSYS','MATLAB','GD&T','Lean Manufacturing'],description:'Entry-level mechanical engineering foundation covering core engineering subjects, manufacturing, technical drawings and common CAD tools.'},
+ mechanical_design_engineer:{title:'Mechanical Design Engineer',required:['SolidWorks','AutoCAD','GD&T','Technical Drawings','ANSYS','Manufacturing Processes','Problem Solving'],preferred:['CATIA','FEA','MATLAB','Creo','Fusion 360'],description:'Mechanical CAD, engineering drawings, geometric tolerancing and design validation.'},
+ manufacturing_engineer:{title:'Manufacturing / Production Engineer',required:['Manufacturing Processes','Lean Manufacturing','CNC','Quality Assurance','GD&T','Six Sigma','Microsoft Excel','Problem Solving'],preferred:['AutoCAD','PLC','Preventive Maintenance','Project Management'],description:'Production processes, quality control, continuous improvement and manufacturing systems.'},
+ quality_engineer:{title:'Quality Engineer',required:['Quality Assurance','Six Sigma','SPC','Root Cause Analysis','ISO 9001','Microsoft Excel','Documentation','Problem Solving'],preferred:['Lean Manufacturing','Project Management','GD&T','Manufacturing Processes'],description:'Quality systems, inspection, statistical process control and corrective-action methods.'},
+ maintenance_engineer:{title:'Maintenance Engineer',required:['Preventive Maintenance','PLC','Electrical Machines','Control Systems','Manufacturing Processes','Problem Solving','Documentation'],preferred:['AutoCAD','Arduino','Embedded Systems','Six Sigma'],description:'Equipment reliability, preventive maintenance, industrial controls and troubleshooting practices.'},
+ automotive_engineer:{title:'Automotive Engineer',required:['CATIA','SolidWorks','ANSYS','Thermodynamics','Manufacturing Processes','GD&T','MATLAB','Technical Drawings'],preferred:['CFD','FEA','Embedded Systems','Control Systems'],description:'Vehicle systems, CAD/CAE, engineering analysis and manufacturing.'},
+ software_developer:{title:'Software Developer',required:['Python','Java','Data Structures & Algorithms','OOP','SQL','Git','Testing','Problem Solving'],preferred:['REST APIs','Docker','Linux','JavaScript','PostgreSQL'],description:'Programming fundamentals, data structures, databases, version control and software testing.'},
+ frontend_developer:{title:'Frontend Developer',required:['HTML','CSS','JavaScript','React.js','Git','REST APIs','Responsive Design','Accessibility'],preferred:['TypeScript','Figma','UI/UX','Tailwind CSS','Testing'],description:'Building accessible, responsive user interfaces and integrating APIs.'},
+ backend_developer:{title:'Backend Developer',required:['Python','Java','SQL','PostgreSQL','REST APIs','Git','Linux','Docker'],preferred:['Django','FastAPI','Node.js','AWS','Redis'],description:'Server-side development, APIs, databases, version control and deployment fundamentals.'},
+ full_stack_developer:{title:'Full-Stack Developer',required:['HTML','CSS','JavaScript','React.js','Node.js','SQL','Git','REST APIs'],preferred:['Docker','MongoDB','TypeScript','AWS','Testing'],description:'Frontend and backend application development with databases and APIs.'},
+ devops_engineer:{title:'DevOps Engineer',required:['Linux','Git','Docker','Kubernetes','AWS','CI/CD','Terraform','Scripting'],preferred:['Prometheus','Grafana','Azure','Ansible'],description:'Automation, containers, cloud infrastructure, monitoring and continuous delivery.'},
+ cybersecurity_analyst:{title:'Cybersecurity Analyst',required:['Cybersecurity','Network Security','Linux','Python','Wireshark','SIEM','Vulnerability Assessment'],preferred:['Burp Suite','OWASP','Penetration Testing','Incident Response'],description:'Security monitoring, network fundamentals, vulnerability analysis and defensive tooling.'},
+ data_analyst:{title:'Data Analyst',required:['SQL','Microsoft Excel','Python','Data Analysis','Data Visualization','Statistics','Power BI'],preferred:['Tableau','Pandas','Data Cleaning','A/B Testing'],description:'Working with datasets, querying, analysis, visualisation and communicating insights.'},
+ data_scientist:{title:'Data Scientist',required:['Python','SQL','Statistics','Machine Learning','Pandas','NumPy','scikit-learn','Data Visualization'],preferred:['TensorFlow','PyTorch','Deep Learning','Jupyter Notebook'],description:'Statistical analysis, machine learning workflows and reproducible data work.'},
+ ai_ml_engineer:{title:'AI / Machine Learning Engineer',required:['Python','Machine Learning','Deep Learning','TensorFlow','PyTorch','scikit-learn','NumPy','Git'],preferred:['LLM','MLOps','Computer Vision','NLP','Pandas'],description:'Developing, evaluating and maintaining machine-learning systems.'},
+ electrical_engineer:{title:'Electrical Engineer',required:['Circuit Analysis','Electrical Machines','Power Systems','Power Electronics','Control Systems','MATLAB','PLC'],preferred:['ETAP','AutoCAD','Simulink','Power Systems'],description:'Electrical circuits, machines, power systems, controls and engineering simulation.'},
+ electronics_engineer:{title:'Electronics Engineer',required:['Circuit Analysis','PCB Design','Microcontrollers','Embedded Systems','C','C++','Arduino'],preferred:['IoT','Verilog','VHDL','MATLAB'],description:'Electronic circuits, embedded hardware, microcontrollers and board-level design.'},
+ civil_engineer:{title:'Civil Engineer',required:['AutoCAD','Revit','BIM','Structural Analysis','Surveying','Estimation & Costing','Microsoft Excel'],preferred:['STAAD.Pro','ETABS','Quantity Surveying','Geotechnical Engineering'],description:'Civil design, construction documentation, structural concepts, surveying and estimation.'},
+ robotics_engineer:{title:'Robotics / Embedded Systems Engineer',required:['Robotics','Arduino','Embedded Systems','C++','Python','Control Systems','MATLAB','IoT'],preferred:['PLC','Microcontrollers','PCB Design','ROS'],description:'Robotics, embedded programming, controls and hardware-software integration.'},
+ ui_ux_designer:{title:'UI / UX Designer',required:['UI/UX','Figma','Wireframing','Prototyping','User Research','Usability Testing','Accessibility'],preferred:['Adobe Photoshop','Adobe Illustrator','Design Systems','HTML','CSS'],description:'User-centred design, prototyping, research and usability.'},
+ business_analyst:{title:'Business Analyst',required:['Business Analysis','Requirements Gathering','Microsoft Excel','SQL','Power BI','Process Mapping','Jira','Communication'],preferred:['BPMN','Tableau','Project Management','Stakeholder Management'],description:'Requirements, business processes, data reporting and stakeholder communication.'},
+ digital_marketing:{title:'Digital Marketing Executive',required:['SEO','SEM','Google Analytics','Google Ads','Content Marketing','Social Media Marketing','Email Marketing'],preferred:['Meta Ads','CRM','Canva','Market Research','Microsoft Excel'],description:'Search, content, campaign analytics and digital audience engagement.'},
+ financial_analyst:{title:'Financial Analyst',required:['Financial Analysis','Financial Modelling','Accounting','Microsoft Excel','Budgeting','Forecasting','Power BI'],preferred:['GST','Auditing','Tally','Tableau'],description:'Financial reporting, modelling, budgeting, forecasting and spreadsheet analysis.'},
+ hr_coordinator:{title:'HR Coordinator',required:['Recruitment','HR Operations','Human Resource Management','Payroll','Employee Relations','Communication','Microsoft Excel'],preferred:['Training & Development','Project Management','Human Resource Management'],description:'Recruitment coordination, HR administration, payroll and employee support.'},
+ supply_chain_analyst:{title:'Supply Chain / Operations Analyst',required:['Supply Chain Management','Inventory Management','Procurement','Vendor Management','Logistics','Operations Management','Microsoft Excel'],preferred:['Demand Planning','Lean Operations','Power BI','Forecasting'],description:'Inventory, procurement, logistics, supplier coordination and operations analysis.'}
+};
+function splitSkillInput(text){return String(text||'').split(/[;,\n]+/).map(x=>x.trim()).filter(Boolean).slice(0,100)}
+function canonicalSkillName(raw){const token=String(raw||'').trim();if(!token)return '';const exact=SK.find(s=>s.name.toLowerCase()===token.toLowerCase());if(exact)return exact.name;const found=findSkills(token);return found.length===1?found[0]:token}
+function skillNamesFromInput(text){const names=[];for(const part of splitSkillInput(text)){const found=findSkills(part);if(found.length)names.push(...found);else names.push(canonicalSkillName(part));}return [...new Set(names.filter(Boolean))]}
+function hasNamedSkill(text,name){const known=SK.find(s=>s.name.toLowerCase()===String(name).toLowerCase());if(known)return hasSkill(text,known);const escaped=String(name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');try{return new RegExp('(?<![A-Za-z0-9])'+escaped+'(?![A-Za-z0-9])','i').test(String(text||''))}catch{return String(text||'').toLowerCase().includes(String(name).toLowerCase())}}
+function namedSkillEvidence(text,name){const known=SK.find(s=>s.name.toLowerCase()===String(name).toLowerCase());if(known)return evidenceLines(text,known);return clean(text).split(/\n+/).map(s=>s.trim()).filter(Boolean).filter(line=>hasNamedSkill(line,name)).slice(0,3)}
+function analyseRoleProfile(resume,roleTitle,profileKey,customText){
+ const profile=ROLE_PROFILES[profileKey]||null;const customRequired=skillNamesFromInput(customText);const required=[...new Set([...(profile?.required||[]),...(profileKey==='custom'?customRequired:[])])];
+ const preferred=[...new Set(profile?.preferred||[])].filter(s=>!required.includes(s));const pdfSkills=findSkills(resume);const profileSkills=new Set(pdfSkills);
+ // Also retain custom skill names when the exact wording appears in the uploaded PDF.
+ const dynamicDetected=required.filter(name=>hasNamedSkill(resume,name));const resumeSkills=[...new Set([...pdfSkills,...dynamicDetected])];
+ const matched=[],missing=[];required.forEach((name,index)=>{const inPdf=hasNamedSkill(resume,name);const cat=CAT[name]||'Role-specific skill';if(inPdf){matched.push({name,cat,evidence:namedSkillEvidence(resume,name),source:'Uploaded PDF'});}else{const priority=index<Math.min(4,required.length)?'High':'Medium';missing.push({name,cat,evidence:[],priority,idx:index,sourceType:profileKey==='custom'?'user-entered role requirements':'built-in role profile'});}});
+ const optionalMatched=preferred.filter(name=>hasNamedSkill(resume,name));const optionalMissing=preferred.filter(name=>!optionalMatched.includes(name));const total=required.length;
+ return{resumeText:clean(resume),jobDescription:'',resumeSkills,profileSkills:[...profileSkills],required,matched,missing,optionalMatched,optionalMissing,coverage:total?Math.round(matched.length/total*1000)/10:0,requiredMap:new Map(),prefMap:new Map(),roleMode:true,roleProfileKey:profileKey,roleProfileLabel:profile?.title||roleTitle,roleProfileDescription:profile?.description||'Requirements manually supplied for this custom role.',roleProfileSource:profile?'Built-in reference role profile':'User-entered custom role skills'};
+}
+function parseEntry(entry){const ix=entry.indexOf('|');const name=entry.slice(0,ix);const aliases=(entry.slice(ix+1)||'').split(';').filter(Boolean);if(!aliases.includes(name)&&!['C','Go','R'].includes(name))aliases.push(name);return{name,cat:null,regex:aliases.map(a=>a.startsWith('re:')?new RegExp(a.slice(3),'i'):new RegExp('(?<![A-Za-z0-9_+#.])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![A-Za-z0-9_])','i'))}}
+const SK=[];const CAT={};for(const [cat,entries] of Object.entries(TAX)){for(const entry of entries){const s=parseEntry(entry);s.cat=cat;CAT[s.name]=cat;SK.push(s)}}
+function hasSkill(text,skill){
+ const value=String(text||'');
+ // Single-letter C is only accepted when the surrounding wording makes it a language/list item.
+ if(skill.name==='C'){
+  return /\bC\s*(?:programming|language)\b|\bC\s*\/\s*C\+\+|\bC\s+and\s+C\+\+/i.test(value)
+   || /(?:^|[:,;|])\s*C\s*(?=[,;|]|$)/m.test(value)
+   || /^\s*C\s*$/m.test(value);
+ }
+ return skill.regex.some(re=>re.test(value));
+}
+function findSkills(text){const found=new Set();for(const skill of SK)if(hasSkill(text,skill))found.add(skill.name);return [...found]}
+function evidenceLines(text,skill){return clean(text).split(/\n+/).map(x=>x.trim()).filter(Boolean).filter(line=>hasSkill(line,skill)).slice(0,3)}
+function parseJD(jd){
+ const req=new Map(),pref=new Map();let mode='req',sectionPriority='Medium',idx=0;
+ for(const raw of clean(jd).split('\n')){
+  const originalLine=raw.trim();
+  let line=originalLine.replace(/^\s*(?:[-*•·▪●○◦]|\d+[.)])\s*/,'').trim();
+  if(!line)continue;
+  if(CONTEXT_HEADING.test(line)){mode='context';sectionPriority='Low';continue}
+  const optHeading=line.match(OPTIONAL_HEADING),reqHeading=line.match(REQUIRED_HEADING);
+  if(optHeading||reqHeading){
+   const match=optHeading||reqHeading;mode=optHeading?'opt':'req';
+   sectionPriority=optHeading?'Low':'High';line=(match[2]||'').trim();if(!line)continue;
+  }
+  const found=SK.filter(skill=>hasSkill(line,skill));if(!found.length)continue;
+  const explicit=CONTEXT_EXPLICIT_REQUIREMENT.test(line)||STRONG.test(line);
+  if(mode==='context'&&!explicit)continue;
+  const optional=mode==='opt'||OPTIONAL_INLINE.test(line);
+  const target=optional?pref:req;
+  for(const skill of found){
+   const name=skill.name,priority=optional?'Low':(sectionPriority==='High'||STRONG.test(line)?'High':'Medium');
+   if(!target.has(name))target.set(name,{evidence:[],idx:idx++,priority});
+   const item=target.get(name);
+   // Store the source line exactly as supplied (including its bullet marker and punctuation).
+   if(originalLine&&!item.evidence.includes(originalLine))item.evidence.push(originalLine);
+   if(priority==='High')item.priority='High';
+  }
+ }
+ for(const name of req.keys())pref.delete(name);
+ return{req,pref};
+}
+function analyse(resume,jd){
+ const resumeSkills=findSkills(resume),profileSet=new Set(resumeSkills),{req,pref}=parseJD(jd),matched=[],missing=[];
+ for(const [name,data] of req){
+  const skill=SK.find(x=>x.name===name);
+  if(profileSet.has(name)){
+   const evidence=evidenceLines(resume,skill);
+   matched.push({name,cat:CAT[name],evidence,source:'Uploaded PDF'});
+  }else missing.push({name,cat:CAT[name],evidence:data.evidence,priority:data.priority||'Medium',idx:data.idx});
+ }
+ const rank={High:0,Medium:1,Low:2};missing.sort((a,b)=>(rank[a.priority]??1)-(rank[b.priority]??1)||a.idx-b.idx);
+ const optionalMatched=[...pref.keys()].filter(x=>profileSet.has(x)),optionalMissing=[...pref.keys()].filter(x=>!profileSet.has(x));
+ const total=req.size;
+ return{resumeText:clean(resume),jobDescription:clean(jd),resumeSkills,profileSkills:[...profileSet],required:[...req.keys()],matched,missing,optionalMatched,optionalMissing,coverage:total?Math.round(matched.length/total*1000)/10:0,requiredMap:req,prefMap:pref};
+}
+function selectTopThreeGaps(missing){
+ const rank={High:0,Medium:1,Low:2};
+ return [...(missing||[])].sort((a,b)=>(rank[a.priority]??1)-(rank[b.priority]??1)||(a.idx??0)-(b.idx??0)).slice(0,3);
+}
+function learningPlan(missing){
+ // M5 requirement: create a 14-day roadmap for the TOP THREE missing skills only.
+ // Gaps beyond these three stay visible in the gap analysis, but never enter this plan.
+ const top=selectTopThreeGaps(missing),days=[];
+ if(!top.length)return days;
+ const skillSteps=[
+  ['Understand the foundations',skill=>`Read a beginner introduction to ${skill}. Write down what it is, where it is used and three key concepts.`, 'A one-page concept summary'],
+  ['Follow a guided tutorial',skill=>`Complete an official beginner tutorial for ${skill}. Reproduce the example and note each step in your own words.`, 'A working guided example'],
+  ['Practise independently',skill=>`Complete two small exercises using ${skill} without copying a solution. Check your results and note anything difficult.`, 'Two completed practice exercises'],
+  ['Apply it to the target role',skill=>`Use ${skill} in a small task that resembles the work described in the target job description.`, 'A role-related practical task'],
+  ['Strengthen core techniques',skill=>`Practise a second, slightly more challenging use of ${skill}. Explain why you chose your approach.`, 'A second practical example'],
+  ['Test and document',skill=>`Check your ${skill} work, fix one issue, and write a short README describing what you built and learned.`, 'Tested work and short documentation'],
+  ['Build a small component',skill=>`Build one useful component or workflow that demonstrates ${skill}. Keep the scope small and finish it.`, 'A working project component'],
+  ['Extend the component',skill=>`Add one useful improvement to your ${skill} component and explain the design decision.`, 'An improved project component'],
+  ['Validate your result',skill=>`Test the main cases for your ${skill} work. Record what works and what still needs improvement.`, 'A simple test checklist'],
+  ['Practise a job-style task',skill=>`Complete a timed, role-related practice task involving ${skill}, then review your solution.`, 'A completed job-style exercise'],
+  ['Polish and explain',skill=>`Improve readability and reliability of your ${skill} work. Prepare a short explanation of the approach.`, 'A polished example and explanation'],
+  ['Prepare evidence',skill=>`Prepare a small demonstration of ${skill}. Keep screenshots, a link or notes as evidence of what you personally completed.`, 'Demonstrable evidence of learning']
+ ];
+ // Share the first 12 days evenly between the selected top gaps: 4 days each
+ // for 3 gaps, 6 days each for 2 gaps, or 12 days for a single gap.
+ const base=Math.floor(12/top.length),extra=12%top.length;
+ let day=1;
+ top.forEach((gap,index)=>{
+  const count=base+(index<extra?1:0);
+  for(let step=0;step<count;step++){
+   const item=skillSteps[step];
+   days.push({day:day++,skill:gap.name,phase:item[0],task:item[1](gap.name),result:item[2],resource:RES[gap.cat]||RES['Professional & Collaboration Skills'],time:'45–90 min'});
+  }
+ });
+ const skillNames=top.map(x=>x.name).join(', ');
+ days.push({day:13,skill:skillNames,phase:'Combine the top gaps',task:`Create one small role-relevant exercise or project that uses the selected skills: ${skillNames}. Keep the scope achievable and make each skill visible in the result.`,result:'One integrated mini-project',resource:'Use the official learning resources and practice work from Days 1–12.',time:'1–2 hours'});
+ days.push({day:14,skill:skillNames,phase:'Review and prepare evidence',task:`Review the target role requirements against what you learned in ${skillNames}. Identify what you can now demonstrate, note remaining practice needs, and prepare a short project demo or learning summary. Only add a skill to your resume when you can honestly demonstrate it.`,result:'A short demo and honest skills evidence',resource:'Your notes, exercises and integrated mini-project from the previous days.',time:'1–2 hours'});
+ return days;
+}
+function escapeCSV(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function makeReport(r){
+ const lines=[
+  'SKILLSYNC — ROLE SKILL GAP REPORT','',
+  `Target role: ${r.jobTitle||'Not specified'}`,
+  `Comparison method: ${r.roleMode?'Built-in / user-entered role skill profile':'Actual job description (M5 evidence mode)'}`,
+  `Source: ${r.roleMode?(r.roleProfileSource||'Role profile'):(r.jobURL||'Job description pasted by user')}`,'',
+  `Required skill coverage: ${r.coverage}%`,
+  `Required skills: ${r.required.join(', ')||'None detected'}`,
+  `Matched skills: ${r.matched.map(x=>x.name).join(', ')||'None'}`,
+  `Missing required skills: ${r.missing.map(x=>x.name).join(', ')||'None'}`,
+  `Optional skills found: ${r.optionalMatched.join(', ')||'None'}`,
+  `Optional skills not detected: ${r.optionalMissing.join(', ')||'None'}`,'',
+  'MISSING REQUIRED SKILLS & REQUIREMENT SOURCE',
+  ...r.missing.flatMap(m=>[`- ${m.name} (${m.priority} priority; ${m.cat})`,...(m.evidence||[]).map(e=>'  Job-description evidence: '+e),...(r.roleMode?[`  Source: ${m.sourceType||r.roleProfileSource||'Role profile'}`]:[])]),'',
+  'MATCHED SKILLS & SOURCE EVIDENCE',
+  ...r.matched.flatMap(m=>[`- ${m.name} (${m.source||'Uploaded PDF'})`,...m.evidence.map(e=>'  PDF evidence: '+e),]),'',
+  'Note: a gap means the skill was not detected in the uploaded PDF. Verify PDF extraction and alternate wording before concluding the candidate lacks a skill.'
+ ];
+ return lines.join('\n');
+}
+function chipList(items,kind){return items.length?items.map(x=>`<span class="chip ${kind||''}">${escapeHTML(x)}</span>`).join(''):'<span class="sub">None detected</span>'}
+function updateRoleProfileUI(){
+ const key=$('#rolePreset').value,profile=ROLE_PROFILES[key];
+ $('#customRoleSkillsWrap').classList.toggle('hidden',key!=='custom');
+ const preview=$('#roleProfilePreview');
+ if(profile){$('#jobTitle').value=profile.title;preview.innerHTML=`<strong>${escapeHTML(profile.title)} — typical skill baseline</strong><p class="role-note">${escapeHTML(profile.description)}</p><div class="evidence-label" style="margin:8px 0 5px">Core / expected skills</div><div class="chips">${chipList(profile.required,'ok')}</div><div class="evidence-label" style="margin:10px 0 5px">Additional / preferred skills</div><div class="chips">${chipList(profile.preferred,'warn')}</div>`;
+ }else if(key==='custom'){preview.innerHTML='<strong>Custom role</strong><p class="role-note">Enter the role title and the skill names you want to use as its requirement profile. SkillSync will compare them directly with the uploaded resume.</p>';}else{preview.innerHTML='<strong>Choose a role to see its skill requirements.</strong><p class="role-note">No web search is performed. You can also define a custom role and its requirements.</p>';}
+}
+$('#rolePreset').addEventListener('change',updateRoleProfileUI);
+
+// PDF extraction: reading-order-aware text extraction, with optional OCR fallback for scanned PDFs.
+
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function makeRows(items,tolerance=3.8){const sorted=[...items].sort((a,b)=>b.y-a.y||a.x-b.x),rows=[];for(const it of sorted){const row=rows[rows.length-1];if(row&&Math.abs(row.y-it.y)<=tolerance)row.items.push(it);else rows.push({y:it.y,items:[it]})}return rows}
+function groupLines(items){return makeRows(items).map(row=>{const cells=row.items.sort((a,b)=>a.x-b.x);let line='';let lastRight=null;for(const cell of cells){const gap=lastRight===null?0:cell.x-lastRight;line+=(line?(gap>22?'  |  ':' '):'')+cell.text;lastRight=cell.x+Math.max(0,cell.w||0)}return line.trim()}).join('\n')}
+function orderText(items,width){
+ if(items.length<18)return groupLines(items);
+ let cut=null;for(let x=width*.25;x<=width*.75;x+=width/120){const crossings=items.filter(it=>it.x<x&&it.x+it.w>x).length;if(!cut||crossings<cut.crossings)cut={x,crossings};}
+ if(!cut)return groupLines(items);
+ const left=items.filter(it=>it.x+it.w/2<cut.x),right=items.filter(it=>it.x+it.w/2>=cut.x);
+ if(cut.crossings>items.length*.06||left.length<items.length*.1||right.length<items.length*.1)return groupLines(items);
+ // Repeated paired rows are more likely a table than two independent resume columns.
+ const rows=makeRows(items),paired=rows.filter(row=>row.items.some(it=>it.x+it.w/2<cut.x)&&row.items.some(it=>it.x+it.w/2>=cut.x)).length;
+ const pairedRatio=rows.length?paired/rows.length:0;
+ if(pairedRatio>.68)return groupLines(items);
+ return groupLines(left)+'\n\n'+groupLines(right);
+}
+async function loadTesseract(){if(window.Tesseract)return window.Tesseract;await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=resolve;s.onerror=()=>reject(new Error('OCR library could not be loaded'));document.head.appendChild(s)});if(!window.Tesseract)throw new Error('OCR library unavailable');return window.Tesseract}
+async function ocrPdf(pdf,onProgress){const T=await loadTesseract();const worker=await T.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text')onProgress?.(`OCR in progress: ${Math.round((m.progress||0)*100)}%`)}});const result=[];try{for(let n=1;n<=pdf.numPages;n++){onProgress?.(`OCR reading page ${n} of ${pdf.numPages}…`);const page=await pdf.getPage(n),viewport=page.getViewport({scale:1.75}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);await page.render({canvasContext:ctx,viewport}).promise;const rec=await worker.recognize(canvas);result.push(rec.data.text||'');canvas.width=0;canvas.height=0}return clean(result.join('\n\n')).trim()}finally{await worker.terminate()}}
+async function extractPdf(file,onProgress){if(!window.pdfjsLib)throw new Error('PDF reader could not load. Check your internet connection.');const buf=new Uint8Array(await file.arrayBuffer());if(String.fromCharCode(...buf.slice(0,4))!=='%PDF')throw new Error('The selected file does not appear to be a valid PDF.');const pdf=await pdfjsLib.getDocument({data:buf}).promise;const parts=[];for(let n=1;n<=pdf.numPages;n++){onProgress?.(`Extracting text from page ${n} of ${pdf.numPages}…`);const page=await pdf.getPage(n),viewport=page.getViewport({scale:1}),content=await page.getTextContent();const items=content.items.filter(i=>i.str&&i.str.trim()).map(i=>({text:i.str,x:i.transform[4],y:i.transform[5],w:i.width}));parts.push(orderText(items,viewport.width))}let text=clean(parts.join('\n\n')).trim();const alnum=(text.match(/[A-Za-z0-9]/g)||[]).length;if(alnum<90){onProgress?.('Scanned or image-based PDF detected. Trying in-browser OCR…');try{const scanned=await ocrPdf(pdf,onProgress);if((scanned.match(/[A-Za-z0-9]/g)||[]).length>alnum)text=scanned;else if(!scanned)throw new Error('OCR found no readable text')}catch(err){if(!text)throw new Error('This looks like a scanned PDF, but OCR could not run. Check your internet connection or paste the resume text manually.');onProgress?.('OCR was unavailable; using the selectable text that could be extracted.')}}return text}
+let resumeSource={type:'none',name:''};
+let resumeFullText=''; // Full PDF extraction is kept for matching; only a short preview is displayed.
+$('#file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>10*1024*1024){$('#msg').textContent='File exceeds the 10 MB limit. Please choose a smaller PDF.';e.target.value='';return}resumeSource={type:'none',name:''};resumeFullText='';$('#resume').value='';$('#msg').textContent='Opening PDF…';try{const text=await extractPdf(file,msg=>$('#msg').textContent=msg);resumeFullText=text;$('#resume').value=compactPdfPreview(text);resumeSource={type:'pdf',name:file.name};const count=(text.match(/[A-Za-z0-9]/g)||[]).length;$('#msg').textContent=count<90?`Only limited text could be extracted from ${file.name}. Automatic OCR was attempted if the PDF looked scanned; try a searchable PDF export if important text is missing.`:`Resume read from ${file.name}. A short preview is available below; the full extracted text is used internally for accurate skill matching.`}catch(err){resumeFullText='';$('#msg').textContent=err.message||'Could not read this PDF. Try another file.'}});
+
+let last=null;let currentPlanKey='';
+const RESUME_SECTION_RULES=[
+ ['Professional summary',/^(professional\s+)?(summary|profile(?:\s+summary)?|career summary|objective|about me)$/i],
+ ['Skills',/^(technical\s+)?(skills|core competencies|competencies|key skills|technical expertise|areas of expertise)$/i],
+ ['Experience',/^(professional\s+)?(experience|work experience|employment history|work history|internships?|internship experience|internship\s*\/\s*practical exposure|practical exposure|industrial training)$/i],
+ ['Projects',/^(academic\s+)?(projects?|key projects|personal projects|academic projects|project experience|project work)$/i],
+ ['Education',/^(education|academic background|qualifications|educational qualifications)$/i],
+ ['Certifications & training',/^(certifications?|licenses?|courses|training|certificates)$/i],
+ ['Achievements',/^(achievements?|awards|honors|honours)$/i],
+ ['Other details',/^(additional information|additional details|other details|publications?|volunteer experience|extracurricular activities|languages|interests|references)$/i]
+];
+function buildResumeOverview(text,resumeSkills,requiredSkills=[]){
+ // Keep the default overview short and job-relevant. Full extracted text remains optional below.
+ const lines=clean(text).split(/\n+/).map(x=>x.replace(/^\s*(?:[•●▪◦*-]|\d+[.)])\s*/,'').trim()).filter(Boolean);
+ const isContact=line=>/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(line)||/https?:\/\/|www\./i.test(line)||(line.match(/\+?\d[\d\s().-]*\d/g)||[]).some(v=>(v.match(/\d/g)||[]).length>=10);
+ const isHeading=line=>RESUME_SECTION_RULES.some(([,re])=>re.test(line.replace(/[:：]$/,'')));
+ const isNoise=line=>isContact(line)||isHeading(line)||/^(page\s+\d+|curriculum vitae|resume|references available on request|skillsync test document.*|fictional sample.*|sample candidate profile.*|this fictional resume is designed to.*|sample academic record)$/i.test(line);
+ const compact=(value,max=210)=>{let t=String(value||'').replace(/\s+/g,' ').trim();if(t.length>max)t=t.slice(0,max-1).replace(/\s+\S*$/,'')+'…';return t};
+ const sections=[];let current=null;const intro=[];
+ for(const line of lines){
+  const heading=RESUME_SECTION_RULES.find(([,re])=>re.test(line.replace(/[:：]$/,'')));
+  if(heading){current={name:heading[0],lines:[]};sections.push(current);continue}
+  if(current){if(!isNoise(line))current.lines.push(line)}else if(!isNoise(line)&&intro.length<8){intro.push(line)}
+ }
+ const byName=name=>sections.find(x=>x.name===name)?.lines||[];
+ const headerLines=intro.slice(0,2).filter(x=>x.length<=90);
+ const summaryLines=byName('Professional summary');
+ const summarySource=summaryLines.length?summaryLines:intro.filter(x=>x.length>45 && /\b(experience|developer|engineer|student|graduate|speciali[sz]e|skilled|focused|worked|built|created|managed|designed|knowledge)\b/i.test(x)).slice(0,4);
+ // Preserve complete summary sentences. The previous 180-character cap cut sentences
+ // mid-thought (for example, after "Comfortable creating…").
+ const summaryText=summarySource.join(' ').replace(/\s+/g,' ').trim();
+ const summarySentences=(summaryText.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g)||[summaryText]).map(x=>x.trim()).filter(Boolean);
+ let summary='';
+ for(const sentence of summarySentences){
+  if(summarySentences.length>1 && summary && summary.length+sentence.length+1>520)break;
+  if(!summary && sentence.length>650){summary=sentence.slice(0,649).replace(/\s+\S*$/,'')+'…';break;}
+  summary+=(summary?' ':'')+sentence;
+  if(summary.length>=520)break;
+ }
+ if(!summary)summary='No concise professional summary was identified in the resume.';
+ const education=byName('Education').filter(x=>x.length>8&&x.length<=180&&/\b(B\.?Tech|B\.?E\.?|B\.?Sc\.?|M\.?Tech|M\.?E\.?|M\.?Sc\.?|MBA|BCA|MCA|diploma|degree|university|college|school|institute|graduat|class\s*(?:10|12|x|xii)|CGPA|GPA|percentage|20\d{2})\b/i.test(x)).slice(0,1).map(x=>compact(x,125));
+ const targetSet=new Set(requiredSkills||[]);
+ const proofLines=[...byName('Experience'),...byName('Projects')].filter(x=>x.length>18);
+ const scored=proofLines.map((line,index)=>{
+  const skills=findSkills(line),relevant=skills.filter(x=>targetSet.has(x));
+  const action=/\b(built|developed|designed|implemented|created|analysed|analyzed|managed|tested|led|improved|maintained|used|worked|deployed|modelled|modeled|fabricated|programmed|simulated|operated|reduced|increased)\b/i.test(line);
+  return {line,index,score:relevant.length*4+(action?1:0)+Math.min(line.length,160)/500,skills:relevant};
+ }).sort((a,b)=>b.score-a.score||a.index-b.index);
+ let proof=scored.slice(0,2).sort((a,b)=>a.index-b.index).map(x=>({text:compact(x.line,145),skills:x.skills}));
+ if(!proof.length){
+  const fallback=[...intro,...proofLines].filter(x=>x.length>25 && /\b(built|developed|designed|implemented|created|analysed|analyzed|managed|tested|led|improved|maintained|used|worked|deployed|project|intern|experience)\b/i.test(x));
+  proof=fallback.slice(0,2).map(x=>({text:compact(x,145),skills:findSkills(x).filter(k=>targetSet.has(k))}));
+ }
+ const relevantSkills=(resumeSkills||[]).filter(x=>targetSet.has(x));
+ const otherSkills=(resumeSkills||[]).filter(x=>!targetSet.has(x));
+ const header=headerLines.length?headerLines.map(x=>compact(x,75)):['Candidate details not clearly identified'];
+ return {header,summary,education,proof,relevantSkills,otherSkills};
+}
+function renderResumeOverview(r){
+ const o=buildResumeOverview(r.resumeText||'',r.resumeSkills||[],r.required||[]);
+ const sourceLabel=resumeSource.type==='pdf'?`Extracted from PDF: ${resumeSource.name}`:resumeSource.type==='edited-pdf'?`PDF text edited: ${resumeSource.name}`:'Uploaded PDF source';
+ const proofMarkup=o.proof.length?`<ul class="resume-compact-list">${o.proof.map(item=>`<li>${escapeHTML(item.text)}${item.skills.length?`<div class="chips" style="margin-top:5px">${chipList(item.skills,'ok')}</div>`:''}</li>`).join('')}</ul>`:`<p class="sub">No concise experience or project highlights could be isolated. Review the full extracted text if needed.</p>`;
+ const educationMarkup=o.education.length?`<ul class="resume-compact-list">${o.education.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul>`:`<p class="sub">No education entry was clearly recognised.</p>`;
+ const skillsMarkup=o.relevantSkills.length?`<div class="chips">${chipList(o.relevantSkills.slice(0,10),'ok')}</div>${o.relevantSkills.length>10?`<p class="role-note">+ ${o.relevantSkills.length-10} more role-relevant skills are available in the full detected-skills list.</p>`:''}`:`<p class="sub">No skills required by this job were detected in the resume. See the skill-gap analysis below.</p>`;
+ return `<div class="section-title"><h2>Resume overview</h2><span class="role-count">Important details only</span></div>
+ <section class="resume-overview resume-overview-compact" aria-label="Concise resume overview">
+  <div class="resume-overview-head"><div><h3>${escapeHTML(o.header[0]||'Resume highlights')}</h3><div class="role-note">${escapeHTML(o.header.slice(1).join(' · '))}</div><div class="role-note" style="margin-top:5px">${escapeHTML(sourceLabel)}</div></div><span class="pill">${o.relevantSkills.length} job-relevant skills found</span></div>
+  <div class="resume-overview-grid">
+   <div class="resume-overview-block"><h4>Professional summary</h4><p>${escapeHTML(o.summary)}</p></div>
+   <div class="resume-overview-block"><h4>Education</h4>${educationMarkup}</div>
+   <div class="resume-overview-block"><h4>Relevant experience & projects</h4>${proofMarkup}</div>
+   <div class="resume-overview-block"><h4>Skills relevant to this role</h4>${skillsMarkup}</div>
+  </div>
+  <details class="resume-raw"><summary>View additional skills detected (optional)</summary>
+   <div style="margin-top:10px"><strong class="evidence-label">Other skills detected</strong><div class="chips" style="margin-top:7px">${chipList(o.otherSkills,'')}</div><strong class="evidence-label" style="display:block;margin-top:12px">All job-relevant skills detected</strong><div class="chips" style="margin-top:7px">${chipList(o.relevantSkills,'ok')}</div></div>
+  </details>
+ </section>`;
+}
+function renderAnalysis(r){const topGaps=selectTopThreeGaps(r.missing);const days=learningPlan(topGaps);const coverageLabel=r.coverage>=80?'Most listed requirements detected':r.coverage>=50?'Several requirements still need evidence':'Many listed requirements need attention';let html=renderResumeOverview(r);
+if(r.jobTitle){const safeJobUrl=(()=>{try{const u=new URL(r.jobURL||'');return (u.protocol==='http:'||u.protocol==='https:')?u.href:''}catch{return ''}})();html+=`<div class="card job-context"><div><strong>Target role</strong><p class="role-note">${escapeHTML(r.jobTitle)}</p><p class="role-note">Comparison: Local role skill profile</p></div>${safeJobUrl?`<a href="${escapeHTML(safeJobUrl)}" target="_blank" rel="noopener noreferrer">Open source ↗</a>`:''}</div>`}
+html+=`<div class="section-title"><h2>Skill gap analysis overview</h2><span class="pill">Rule-based skill comparison</span></div>`;
+if(!r.required.length)html+=`<div class="empty">No role skills are available. Choose a built-in role or enter required skills for a custom role.</div>`;
+html+=r.roleMode?`<div class="callout"><strong>Role-profile comparison:</strong> ${escapeHTML(r.roleProfileDescription||'')} These are baseline skills, not a guarantee that every employer requires each one. A gap means the skill was not detected in the uploaded PDF. This comparison uses the selected role's reference profile, not a specific employer's job description.</div>`:`<div class="callout"><strong>M5 job-description comparison:</strong> gaps are skills not detected in the uploaded PDF. Each missing skill is supported by the original line from the job description you supplied.</div>`;
+html+=`<div class="stats"><div class="stat"><strong>${r.required.length}</strong><span>Role skills compared</span></div><div class="stat ok"><strong>${r.matched.length}</strong><span>Matched in profile</span></div><div class="stat bad"><strong>${r.missing.length}</strong><span>Required gaps</span></div><div class="stat pri"><strong>${r.coverage}%</strong><span>Coverage</span></div></div>`;
+html+=`<div class="card"><div class="progress-label"><span>${escapeHTML(coverageLabel)}</span><strong>${r.coverage}%</strong></div><div class="progress" role="progressbar" aria-valuenow="${r.coverage}" aria-valuemin="0" aria-valuemax="100" aria-label="Required skill coverage"><i style="width:${r.coverage}%"></i></div><div class="role-note">Coverage = matched role skills ÷ total role skills in this comparison. It is not a hiring probability or overall candidate score.</div></div>`;
+html+=`<div class="section-title"><h2>Skill gaps — skills not found in your supplied profile</h2><span class="role-count">${r.missing.length} required ${r.missing.length===1?'gap':'gaps'} · complete list</span></div><div class="skill-panel missing-overview">${r.missing.length?`<div class="missing-overview-list">${r.missing.map(m=>`<span class="missing-overview-item"><strong>${escapeHTML(m.name)}</strong><small>${escapeHTML(m.priority)} priority · ${escapeHTML(m.cat)}</small></span>`).join('')}</div><p class="role-note" style="margin:12px 0 0">These are role skills not detected in your uploaded PDF. Review each skill's source and priority below.</p>`:'<div class="empty">No required skills are missing from the uploaded PDF. All recognised requirements were detected.</div>'}</div>`;
+html+=`<div class="results-grid"><div class="skill-panel"><h3 class="badge-ok">✓ Matched required skills in your profile (${r.matched.length})</h3><div class="chips">${chipList(r.matched.map(x=>x.name),'ok')}</div><hr style="border:0;border-top:1px solid var(--bd);margin:13px 0"><h3>Optional skills already found (${r.optionalMatched.length})</h3><div class="chips">${chipList(r.optionalMatched,'warn')}</div></div><div class="skill-panel"><h3>Optional skills not detected (${r.optionalMissing.length})</h3><div class="chips">${chipList(r.optionalMissing,'warn')}</div><p class="role-note" style="margin:10px 0 0">Preferred skills are shown separately and are not counted as required gaps.</p></div></div>`;
+const groups={};for(const name of r.required){const cat=CAT[name]||'Other';groups[cat]??={total:0,matched:0};groups[cat].total++;if(r.matched.some(x=>x.name===name))groups[cat].matched++}const groupHtml=Object.entries(groups).map(([cat,v])=>`<div class="category-row"><span>${escapeHTML(cat)}</span><div class="progress"><i style="width:${v.total?100*v.matched/v.total:0}%"></i></div><strong>${v.matched}/${v.total}</strong></div>`).join('');if(groupHtml)html+=`<div class="section-title"><h2>Coverage by skill category</h2></div><div class="card category-bars">${groupHtml}</div>`;
+html+=`<div class="section-title"><h2>Matched skill evidence</h2><span class="role-count">Resume lines where skills were detected</span></div>`;html+=r.matched.length?r.matched.map(m=>`<div class="skill-card matched"><div class="skill-card-top"><strong>${escapeHTML(m.name)}</strong><span class="chip ok">Matched · ${escapeHTML(m.cat)}</span></div><p><strong>Source:</strong> ${escapeHTML(m.source||'Uploaded PDF')}</p>${m.evidence.length?m.evidence.map(e=>`<blockquote>${escapeHTML(e)}</blockquote>`).join(''):''}</div>`).join(''):`<div class="empty">No required skills were matched. Check that your resume text was extracted correctly.</div>`;
+html+=`<div class="section-title"><h2>Skills you may need to build</h2><span class="role-count">${r.roleMode?'Role-profile gaps':'Missing required skills with job evidence'}</span></div>`;html+=r.missing.length?r.missing.map((m,i)=>`<div class="skill-card missing"><div class="skill-card-top"><div><strong>${i+1}. ${escapeHTML(m.name)}</strong><div class="role-note">${escapeHTML(m.cat)}</div></div><span class="priority ${m.priority.toLowerCase()}">${m.priority} priority</span></div>${r.roleMode?`<div class="evidence-label" style="margin:9px 0 5px">Why it appears in your gap list</div><p>This skill is included in the ${escapeHTML(r.roleProfileLabel||'selected role')} reference profile and was not detected in the uploaded resume PDF.</p><p class="role-note">Source: ${escapeHTML(m.sourceType||r.roleProfileSource||'Role profile')}. This is a role benchmark, not a quote from a specific employer.</p>`:`<div class="evidence-label" style="margin:9px 0 5px">Exact job-description line</div>${(m.evidence||[]).map(e=>`<blockquote>“${escapeHTML(e)}”</blockquote>`).join('')}`}</div>`).join(''):`<div class="empty">No required skill gaps were detected for this role.</div>`;
+
+html+=`<div class="section-title"><h2>14-day learning roadmap — top 3 missing skills</h2><span class="pill">M5 requirement</span></div>`;
+if(topGaps.length){
+ const key=[r.jobTitle||'',r.roleProfileKey||'',r.jobDescription||'',...topGaps.map(x=>x.name)].join('|');currentPlanKey='skillsync-plan-v3-'+simpleHash(key);let completed=[];try{completed=JSON.parse(safeStore.get(currentPlanKey)||'[]')}catch{}
+ html+=`<div class="card"><p class="role-note" style="margin-top:0">This 14-day roadmap covers ONLY the three highest-priority missing skills shown below. Any fourth or later gap remains visible in the full gap list but is deliberately excluded from the roadmap.</p><div class="chips" style="margin:10px 0 14px">${topGaps.map((g,i)=>`<span class="chip bad">${i+1}. ${escapeHTML(g.name)}</span>`).join('')}</div><div class="progress-label"><span>Roadmap progress</span><strong id="planProgress">${completed.length}/14 days</strong></div><div class="progress"><i id="planBar" style="width:${Math.min(100,completed.length/14*100)}%"></i></div>`;
+ for(const [weekTitle,weekDays] of [['Week 1 · Learn the foundations (Days 1–7)',days.filter(d=>d.day<=7)],['Week 2 · Apply, test and demonstrate (Days 8–14)',days.filter(d=>d.day>=8)]]){
+  html+=`<h3 style="margin:18px 0 10px">${weekTitle}</h3><div class="plan-grid">${weekDays.map(d=>`<div class="day ${completed.includes(d.day)?'done':''}" data-day-card="${d.day}"><div class="day-head"><strong>Day ${d.day} · ${escapeHTML(d.skill)}</strong><span class="role-count">${d.time}</span></div><p><strong>${escapeHTML(d.phase)}:</strong> ${escapeHTML(d.task)}</p><p><span class="muted">Outcome:</span> ${escapeHTML(d.result)}</p><p><span class="muted">Suggested starting point:</span> ${escapeHTML(d.resource)}</p><label><input type="checkbox" class="day-check" data-day="${d.day}" ${completed.includes(d.day)?'checked':''}> Mark day complete</label></div>`).join('')}</div>`;
+ }
+ html+=`</div>`;
+}else html+=`<div class="empty">No required skill gaps were found, so a gap-specific two-week learning plan is not needed for this role.</div>`;
+html+=`<details class="card"><summary>All skills detected in your resume (${r.resumeSkills.length})</summary><div class="chips" style="margin-top:12px">${chipList(r.resumeSkills,'')}</div></details>`;
+$('#out').innerHTML=html;document.querySelectorAll('.day-check').forEach(x=>x.addEventListener('change',updatePlanProgress));}
+function simpleHash(str){let h=0;for(let i=0;i<str.length;i++)h=(h*31+str.charCodeAt(i))|0;return Math.abs(h).toString(36)}
+function updatePlanProgress(){const boxes=[...document.querySelectorAll('.day-check')];const done=boxes.filter(x=>x.checked).map(x=>Number(x.dataset.day));safeStore.set(currentPlanKey,JSON.stringify(done));$('#planProgress').textContent=`${done.length}/14 days`;$(`#planBar`).style.width=(done.length/14*100)+'%';boxes.forEach(x=>x.closest('.day').classList.toggle('done',x.checked))}
+$('#go').addEventListener('click',()=>{const resume=resumeFullText,roleTitle=$('#jobTitle').value.trim(),profileKey=$('#rolePreset').value,customSkills=$('#customRoleSkills').value;if(resumeSource.type!=='pdf'||!resume.trim()){$('#out').innerHTML='<div class="empty">Please upload the actual candidate resume PDF first. SkillSync will use text extracted from that PDF; it will not use a demo resume.</div>';return}if(!roleTitle){$('#out').innerHTML='<div class="empty">Please enter or select the role you want to apply for.</div>';$('#jobTitle').focus();return}if(!profileKey){$('#out').innerHTML='<div class="empty">Choose a built-in role profile or select “Other role” and enter the required skills. No job search is used.</div>';$('#rolePreset').focus();return}if(profileKey==='custom'&&!customSkills.trim()){$('#out').innerHTML='<div class="empty">For a custom role, enter the skills required for that role, separated by commas or new lines.</div>';$('#customRoleSkills').focus();return}last=analyseRoleProfile(resume,roleTitle,profileKey,customSkills);last.jobTitle=roleTitle;last.jobURL='';renderAnalysis(last);$('#copy').hidden=$('#download').hidden=$('#print').hidden=false;$('#out').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#copy').addEventListener('click',async()=>{if(!last)return;try{await navigator.clipboard.writeText(makeReport(last));$('#copy').textContent='Copied ✓'}catch{$('#copy').textContent='Clipboard unavailable'}});
+$('#download').addEventListener('click',()=>{if(!last)return;const blob=new Blob([makeReport(last)],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='SkillSync-Report.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+$('#print').addEventListener('click',()=>window.print());
+$('#clearResume').addEventListener('click',()=>{$('#resume').value='';$('#file').value='';resumeFullText='';resumeSource={type:'none',name:''};$('#msg').textContent='Resume PDF cleared.'});
+$('#clearRole').addEventListener('click',()=>{$('#rolePreset').value='';$('#jobTitle').value='';$('#customRoleSkills').value='';updateRoleProfileUI();$('#out').innerHTML='';});
+$('#reset').addEventListener('click',()=>{$('#resume').value='';$('#file').value='';resumeFullText='';resumeSource={type:'none',name:''};$('#rolePreset').value='';$('#jobTitle').value='';$('#customRoleSkills').value='';updateRoleProfileUI();$('#out').innerHTML='';$('#msg').textContent='Ready. Upload the actual resume PDF to begin.';$('#copy').hidden=$('#download').hidden=$('#print').hidden=true;$('#copy').textContent='Copy report';last=null;currentPlanKey='';window.scrollTo({top:0,behavior:'smooth'})});
+
+</script>
+</body>
+</html>
